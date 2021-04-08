@@ -135,6 +135,17 @@ def stop(joints):
     sim.simxSetJointTargetVelocity(clientID, joints[1], 0, sim.simx_opmode_oneshot)
     time.sleep(1)
 
+def turnAround(visionSensors,joints):
+    sim.simxSetJointTargetVelocity(clientID, joints[0], -0.5, sim.simx_opmode_oneshot)
+    sim.simxSetJointTargetVelocity(clientID, joints[1], 0.5, sim.simx_opmode_oneshot)
+    time.sleep(0.5)
+    colourData = getColourData(visionSensors)
+    while colourData[0] != currColour:
+        colourData = getColourData(visionSensors)
+    time.sleep(.5)
+    sim.simxSetJointTargetVelocity(clientID, joints[0], speed, sim.simx_opmode_oneshot)
+
+
 def getColourData(visionSensors):
     colourData = [[0,0,0],[0,0,0],[0,0,0],[0,0,0]]
     for x in range(4):
@@ -150,7 +161,7 @@ def getColourData(visionSensors):
     return colourData
 
 
-def main(destColour):
+def main(destColour="black"):
     print ('Program started')
     destColour = colours[destColour]
     currColour = green
